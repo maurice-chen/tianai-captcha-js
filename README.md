@@ -1,1 +1,0 @@
-# tianai-captcha-js
