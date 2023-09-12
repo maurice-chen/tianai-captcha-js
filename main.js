@@ -10,7 +10,7 @@ document.querySelector('#app').innerHTML = `
     </a>
     <h1>hello tianai captcha!</h1>
     <div class="card">
-      <button id="counter" type="button">展示验证码</button>
+      <button id="counter" type="button">开始验证</button>
     </div>
     
   </div>
@@ -24,9 +24,8 @@ document.querySelector('#counter').addEventListener('click', () => {
             tianaiCaptcha = new TianaiCaptcha({
                 appId:r.data.data.args.generate.appId,
                 token:r.data.data.token.name,
-                success:console.info,
+                success:successFunction,
                 error:console.error
-
             });
             tianaiCaptcha.show();
         });
@@ -35,3 +34,11 @@ document.querySelector('#counter').addEventListener('click', () => {
         tianaiCaptcha.show();
     }
 });
+
+function successFunction(data) {
+    axios.post("/api/resource/captcha/verifyCaptcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data + "&appId=" + tianaiCaptcha.config.appId).then(r => {
+        alert(r.data.message);
+        tianaiCaptcha.hide();
+        tianaiCaptcha = undefined;
+    }).catch(console.error);
+}
