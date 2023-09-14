@@ -38,8 +38,9 @@ document.querySelector('#counter').addEventListener('click', () => {
 
 function successFunction(data) {
     axios.post("/api/resource/captcha/verifyCaptcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data + "&appId=" + tianaiCaptcha.config.appId).then(r => {
-        alert(r.data.message);
-        tianaiCaptcha.hide();
-        tianaiCaptcha = undefined;
+        setTimeout(() => {
+            tianaiCaptcha.hide();
+            tianaiCaptcha = undefined;
+        }, 5000);
     }).catch(console.error);
 }

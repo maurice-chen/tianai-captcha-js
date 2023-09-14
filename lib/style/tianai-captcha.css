@@ -1,22 +1,13 @@
 .__tianai-container {
-    height: calc(100vh);
-    position: absolute;
+    height: 100%;
+    position: fixed;
     width: 100%;
     top: 0;
     left: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.__tianai-overlay {
-    position: absolute;
-    width: 100%;
-    height: calc(100vh);
-    top: 0;
-    left: 0;
-    background-color: #000;
-    opacity: .3;
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 999;
 }
 
@@ -218,8 +209,7 @@
     border: 4px solid #d7d7d7;
     border-top: 4px solid #88949d;
     border-radius: 50%;
-    width: 20%;
-    padding-top: 20%;
+    padding: 10%;
     animation: spin 2s linear infinite; /* 创建旋转动画 */
 }
 
