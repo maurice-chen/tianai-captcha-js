@@ -20,7 +20,7 @@ let tianaiCaptcha;
 
 document.querySelector('#counter').addEventListener('click', () => {
     if (!tianaiCaptcha) {
-        axios.get("/api/resource/captcha/generateToken?type=tianai").then(r => {
+        axios.get(import.meta.env.VITE_APP_SERVER_URL + "/resource/captcha/generateToken?type=tianai").then(r => {
             tianaiCaptcha = new TianaiCaptcha({
                 appId:r.data.data.args.generate.appId,
                 token:r.data.data.token.name,
@@ -33,6 +33,7 @@ document.querySelector('#counter').addEventListener('click', () => {
     } else {
         tianaiCaptcha.show();
     }
+    console.info(import.meta.env.VITE_APP_SERVER_URL);
 });
 
 function successFunction(data) {
