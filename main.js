@@ -41,6 +41,6 @@ function successFunction(data) {
         setTimeout(() => {
             tianaiCaptcha.hide();
             tianaiCaptcha = undefined;
-        }, 5000);
+        }, 3000);
     }).catch(console.error);
 }
