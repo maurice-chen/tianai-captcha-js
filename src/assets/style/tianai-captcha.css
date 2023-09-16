@@ -64,7 +64,7 @@
     padding: 4px;
     box-sizing: border-box;
     text-align: center;
-    z-index: 1000;
+    z-index: 998;
 }
 
 .__tianai-content > .__tianai-content-image-wrapper > .__tianai-content-image-wrapper-alert.success {
