@@ -21,9 +21,10 @@ class TianaiCaptcha {
     this.config.success = this.config.success || console.info;
     this.config.fail = this.config.fail || console.error;
     this.config.failRefreshCaptcha = this.config.failRefreshCaptcha === undefined ? true : this.config.failRefreshCaptcha;
+    this.config.baseUrl = this.config.baseUrl || import.meta.env.VITE_APP_SERVER_URL;
 
     this.http = axios.create({
-      baseURL:this.config.baseUrl || import.meta.env.VITE_APP_SERVER_URL
+      baseURL:this.config.baseUrl
     });
 
     this.containerTemplate = `<div class="__tianai-container" id="tianai-container"></div>`
@@ -87,10 +88,11 @@ class TianaiCaptcha {
         let script = document.createElement("link");
         script.id = "tianai-captcha";
         script.type = "text/css";
-        script.href = this.config.baseUrl + "resource/tianai-captcha.css"
+        script.href = this.config.baseUrl + "/resource/tianai-captcha.css"
         script.rel="stylesheet";
         script.onerror = this.config.fail;
         script.onload = () => this.doShow();
+        document.body.appendChild(script);
       } else {
         this.doShow();
       }

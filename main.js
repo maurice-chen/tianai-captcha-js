@@ -1,7 +1,6 @@
 import './style.css'
 import javascriptLogo from './javascript.svg'
 import axios from "axios";
-import { TianaiCaptcha } from './src/lib/tianai-captcha.js'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -10,7 +9,7 @@ document.querySelector('#app').innerHTML = `
     </a>
     <h1>hello tianai captcha!</h1>
     <div class="card">
-      <button id="counter" type="button">开始验证</button>
+      <button id="captcha" type="button">开始验证</button>
     </div>
     
   </div>
@@ -18,17 +17,32 @@ document.querySelector('#app').innerHTML = `
 
 let tianaiCaptcha;
 
-document.querySelector('#counter').addEventListener('click', () => {
-    console.info(location.origin);
+document.querySelector('#captcha').addEventListener('click', () => {
+
     if (!tianaiCaptcha) {
         axios.get(import.meta.env.VITE_APP_SERVER_URL + "/resource/captcha/generateToken?type=tianai").then(r => {
-            tianaiCaptcha = new TianaiCaptcha({
-                appId:r.data.data.args.generate.appId,
-                token:r.data.data.token.name,
-                success:successFunction,
-                error:console.error
-            });
-            tianaiCaptcha.show();
+
+            let query = document.querySelector("script[id='tianai']");
+
+            if (!query) {
+                let script = document.createElement("script");
+                script.id = "tianai";
+                script.type = "text/javascript";
+                script.src = r.data.data.args.generate.jsUrl;
+                script.onload = () => {
+                    tianaiCaptcha = new TianaiCaptcha({
+                        appId:r.data.data.args.generate.appId,
+                        token:r.data.data.token.name,
+                        success:successFunction,
+                        error:console.error
+                    });
+                    tianaiCaptcha.show();
+                };
+                document.body.appendChild(script);
+            } else {
+                tianaiCaptcha.show();
+            }
+
         });
 
     } else {
