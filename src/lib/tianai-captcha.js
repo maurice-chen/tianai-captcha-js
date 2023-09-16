@@ -1,5 +1,5 @@
 import axios from "axios";
-import './style/tianai-captcha.css'
+import '../assets/style/tianai-captcha.css'
 
 class TianaiCaptcha {
   constructor(config) {
@@ -79,6 +79,27 @@ class TianaiCaptcha {
   }
   show() {
 
+    if (import.meta.env.VITE_NODE_ENV !== 'development') {
+
+      let query = document.querySelector("link[id='tianai-captcha']");
+
+      if (!query) {
+        let script = document.createElement("link");
+        script.id = "tianai-captcha";
+        script.type = "text/css";
+        script.href = this.config.baseUrl + "resource/tianai-captcha.css"
+        script.rel="stylesheet";
+        script.onerror = this.config.fail;
+        script.onload = () => this.doShow();
+      } else {
+        this.doShow();
+      }
+    } else {
+      this.doShow();
+    }
+
+  }
+  doShow() {
     let tianaiContent = document.getElementById("tianai-content");
 
     if (!tianaiContent) {

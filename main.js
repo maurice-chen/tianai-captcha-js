@@ -1,7 +1,7 @@
 import './style.css'
 import javascriptLogo from './javascript.svg'
 import axios from "axios";
-import { TianaiCaptcha } from './lib/tianai-captcha.js'
+import { TianaiCaptcha } from './src/lib/tianai-captcha.js'
 
 document.querySelector('#app').innerHTML = `
   <div>
