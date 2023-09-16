@@ -161,7 +161,7 @@ class TianaiCaptcha {
       const oldImageTarget = document.getElementById("tianai-image-content-target");
       this.removeElement(oldImageTarget);
       wrapper.insertAdjacentHTML('beforeend', this.imageContentTemplate);
-      Array.from(wrapper.children).forEach(el => this.fadeIn(el));
+      //Array.from(wrapper.children).forEach(el => this.fadeIn(el));
     }
 
     const imageBg = document.getElementById("tianai-content-image-bg");
@@ -423,6 +423,16 @@ class TianaiCaptcha {
       trackList: this.validValue.trackArr
     };
 
+    let alert = document.getElementById("tianai-content-image-wrapper-alert");
+    if (alert) {
+      this.fadeOut(alert);
+    }
+
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout);
+      delete this.alertTimeout;
+    }
+
     this.loading(this.config.validText);
     this
         .http
@@ -476,9 +486,7 @@ class TianaiCaptcha {
     content.insertAdjacentHTML("beforeend", template);
   }
   showResult(data) {
-    let alert = document.getElementById("tianai-content-image-wrapper-alert");
-    this.removeElement(alert);
-
+    //const creationTime = new Date().getTime();
     const wrapper = document.getElementById("tianai-content-image-wrapper");
     const template = `
       <div class="__tianai-content-image-wrapper-alert ${data.executeCode === '200' ? 'success' : 'error'}" id="tianai-content-image-wrapper-alert">
@@ -486,9 +494,9 @@ class TianaiCaptcha {
       </div>
     `
     wrapper.insertAdjacentHTML("beforeend", template);
-    alert = wrapper.lastElementChild;
+    const alert = wrapper.lastElementChild;
     this.fadeIn(alert);
-    setTimeout(() => this.fadeOut(alert), 3000);
+    this.alertTimeout = setTimeout(() => this.fadeOut(alert), 3000);
     if (data.executeCode === "200") {
       this.removeLoading();
       this.config.success(data);
