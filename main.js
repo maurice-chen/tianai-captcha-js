@@ -29,7 +29,7 @@ document.querySelector('#captcha').addEventListener('click', () => {
                 let script = document.createElement("script");
                 script.id = "tianai";
                 script.type = "text/javascript";
-                script.src = r.data.data.args.generate.jsUrl;
+                script.src = r.data.data.args.generate.jsUrl + "?date=" + new Date().getTime();
                 script.onload = () => {
                     tianaiCaptcha = new TianaiCaptcha({
                         appId:r.data.data.args.generate.appId,

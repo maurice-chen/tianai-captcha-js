@@ -16,8 +16,10 @@ class TianaiCaptcha {
 
     this.config.dateFormat = this.config.dateFormat || "yyyy-MM-dd HH:mm:ss'";
     this.config.loadingText = this.config.loadingText || '';
+    this.config.title = this.config.title || '安全验证'
     this.config.validText = this.config.validText || ''
     this.config.width = this.config.width || 400;
+    this.config.showMerchantName = this.config.showMerchantName === undefined ? true : this.config.showMerchantName;
     this.config.success = this.config.success || console.info;
     this.config.fail = this.config.fail || console.error;
     this.config.failRefreshCaptcha = this.config.failRefreshCaptcha === undefined ? true : this.config.failRefreshCaptcha;
@@ -32,7 +34,7 @@ class TianaiCaptcha {
     this.contentTemplate = `
         <div class="__tianai-content" style="width:${this.config.width}px" id="tianai-content">
           <div class="__tianai-content-title" id="tianai-content-title">
-            <div class="__tianai-content-title-text">安全拦截</div>
+            <div class="__tianai-content-title-text">${this.config.title}</div>
             <div class="__tianai-content-title-close" id="tianai-content-close-btn"></div>
           </div>
         </div>
@@ -48,14 +50,22 @@ class TianaiCaptcha {
     this.contentOperate = `
         <div class="__tianai-slider-move">
           <div class="__tianai-slider-move-track" id="tianai-slider-move-track">
-            拖动完成验证
+            
           </div>
-          <div class="__tianai-slider-move-btn" id="tianai-slider-move-btn">
+          <div class="__tianai-btn __tianai-slider-move-btn" id="tianai-slider-move-btn">
           </div>
         </div>
         <div class="__tianai-operating">
-          <div class="__tianai-operating-merchant">
-            ${this.config.merchant || ''}
+        
+          <div class="__tianai-operating-merchant" id="tianai-operating-merchant">
+            
+          </div>
+          
+          <div class="__tianai-operating-btn">
+            <div class="__tianai-btn __tianai-operating-refresh-btn" id="tianai-operating-refresh-btn">
+            </div>
+            <div class="__tianai-btn __tianai-operating-close-btn" id="tianai-operating-close-btn">
+            </div>
           </div>
         </div>
     `
@@ -148,6 +158,15 @@ class TianaiCaptcha {
       tianaiTitle.insertAdjacentHTML('afterend',this.contentOperate);
       sliderMoveBtn = document.getElementById("tianai-slider-move-btn");
       sliderMoveBtn.addEventListener("mousedown", this.sliderDown.bind(this));
+      const refreshBtn = document.getElementById("tianai-operating-refresh-btn");
+      refreshBtn.addEventListener("click", this.generateCaptcha.bind(this));
+
+      const closeBtn = document.getElementById("tianai-operating-close-btn");
+      closeBtn.addEventListener("click", this.hide.bind(this));
+      if (this.config.showMerchantName && data.merchantName) {
+        const merchant = document.getElementById("tianai-operating-merchant");
+        merchant.innerHTML = data.merchantName || '';
+      }
     }
 
     let wrapper = document.getElementById("tianai-content-image-wrapper");
