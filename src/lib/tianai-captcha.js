@@ -7,7 +7,7 @@ class TianaiCaptcha {
 
     this.config.postConfig = this.config.postConfig || {
       captchaParamName:'_tianaiCaptcha',
-      appIdParamName:'appId',
+      appIdParamName:'_appId',
       tokenParamName:'_tianaiCaptchaToken'
     }
     this.config.slider = this.config.slider || this.sliderConfig();
@@ -145,7 +145,17 @@ class TianaiCaptcha {
     return this.http
         .post("/resource/captcha/generateCaptcha", this.formUrlEncoded(param))
         .then(r => this.doGenerateHtml(r.data.data))
-        .catch((e) => this.config.fail(e));
+        .catch((e) => {
+          if (e.data.executeCode && e.data.executeCode === '10404') {
+            axios.get(this.config.baseUrl + "/resource/captcha/generateToken?type=tianai").then(r => {
+              this.config.appId = r.data.data.args.generate.appId;
+              this.config.token = r.data.data.token.name;
+              this.generateCaptcha(lading);
+            });
+          } else {
+            this.config.fail(e);
+          }
+        });
   }
   doGenerateHtml(data) {
     this.generateData = data;

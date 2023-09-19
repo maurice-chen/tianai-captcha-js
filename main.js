@@ -70,7 +70,7 @@ document.querySelector('#captcha').addEventListener('click', () => {
 });
 
 function successFunction(data) {
-    axios.post(import.meta.env.VITE_APP_SERVER_URL + "/resource/captcha/verifyCaptcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data + "&appId=" + tianaiCaptcha.config.appId).then(r => {
+    axios.post(import.meta.env.VITE_APP_SERVER_URL + "/resource/captcha/verifyCaptcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data + "&_appId=" + tianaiCaptcha.config.appId).then(r => {
         setTimeout(() => {
             tianaiCaptcha.hide();
             tianaiCaptcha = undefined;
