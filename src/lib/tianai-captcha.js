@@ -7,7 +7,7 @@ class TianaiCaptcha {
 
     this.config.postConfig = this.config.postConfig || {
       captchaParamName:'_tianaiCaptcha',
-      appIdParamName:'_appId',
+      //appIdParamName:'_appId',
       tokenParamName:'_tianaiCaptchaToken'
     }
     this.config.slider = this.config.slider || this.sliderConfig();
@@ -23,11 +23,12 @@ class TianaiCaptcha {
     this.config.success = this.config.success || console.info;
     this.config.fail = this.config.fail || console.error;
     this.config.failRefreshCaptcha = this.config.failRefreshCaptcha === undefined ? true : this.config.failRefreshCaptcha;
-    this.config.baseUrl = this.config.baseUrl || import.meta.env.VITE_APP_SERVER_URL;
 
-    this.http = axios.create({
-      baseURL:this.config.baseUrl
-    });
+    if (!this.config.baseUrl) {
+      throw new Error('baseUrl 不能为空');
+    }
+
+    this.http = axios.create({baseURL:this.config.baseUrl});
 
     this.containerTemplate = `<div class="__tianai-container" id="tianai-container"></div>`
 
@@ -98,7 +99,7 @@ class TianaiCaptcha {
         let script = document.createElement("link");
         script.id = "tianai-captcha";
         script.type = "text/css";
-        script.href = this.config.baseUrl + "/resource/tianai-captcha.css"
+        script.href = this.config.baseUrl + "/tianai-captcha.css"
         script.rel="stylesheet";
         script.onerror = this.config.fail;
         script.onload = () => this.doShow();
@@ -134,22 +135,22 @@ class TianaiCaptcha {
     if (lading) {
       this.loading(this.config.loadingText);
     }
-    let param = {};
+    let param = this.config.postConfig.tokenParamName + "=" + this.config.token + "&captchaType=tianai&generateImageType=" + (this.config.generateType || 'random');
 
-    param[this.config.postConfig.tokenParamName] = this.config.token;
-    param[this.config.postConfig.appIdParamName] = this.config.appId;
+    //param[this.config.postConfig.tokenParamName] = this.config.token;
+    //param[this.config.postConfig.appIdParamName] = this.config.appId;
 
-    param["captchaType"] = "tianai";
-    param["generateImageType"] = this.config.generateType || 'random';
+    //param["captchaType"] = "tianai";
+    //param["generateImageType"] = this.config.generateType || 'random';
 
     return this.http
-        .post("/resource/captcha/generateCaptcha", this.formUrlEncoded(param))
+        .get("/actuator/captcha?" + param)
         .then(r => this.doGenerateHtml(r.data.data))
         .catch((e) => {
           if (e.response.data) {
             const data = e.response.data;
             if (e.response.data.executeCode && e.response.data.executeCode === '10404') {
-              axios.get(this.config.baseUrl + "/resource/captcha/generateToken?type=tianai").then(r => {
+              axios.get(this.config.baseUrl + "/actuator/captchaToken?type=tianai").then(r => {
                 this.config.appId = r.data.data.args.generate.appId;
                 this.config.token = r.data.data.token.name;
                 this.generateCaptcha(lading);
@@ -470,7 +471,8 @@ class TianaiCaptcha {
     this.loading(this.config.validText);
     this
         .http
-        .post("/resource/merchant/clientVerifyTianaiCaptcha?" + this.config.postConfig.tokenParamName + "=" + this.config.token + "&" + this.config.postConfig.appIdParamName + "=" + this.config.appId, data)
+        //.post("/resource/merchant/clientVerifyTianaiCaptcha?" + this.config.postConfig.tokenParamName + "=" + this.config.token + "&" + this.config.postConfig.appIdParamName + "=" + this.config.appId, data)
+        .post("/clientVerify?" + this.config.postConfig.tokenParamName + "=" + this.config.token, data)
         .then(r=> this.showResult(r.data))
         .catch((e) => {
           if (this.config.failRefreshCaptcha) {

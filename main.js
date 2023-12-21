@@ -1,7 +1,7 @@
 import './style.css'
 import javascriptLogo from './javascript.svg'
 import axios from "axios";
-import { TianaiCaptcha } from './src/lib/tianai-captcha.js'
+//import { TianaiCaptcha } from './src/lib/tianai-captcha.js'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -20,8 +20,8 @@ let tianaiCaptcha;
 
 document.querySelector('#captcha').addEventListener('click', () => {
 
-    /*if (!tianaiCaptcha) {
-        axios.get(import.meta.env.VITE_APP_SERVER_URL + "/resource/captcha/generateToken?type=tianai").then(r => {
+    if (!tianaiCaptcha) {
+        axios.get(import.meta.env.VITE_APP_SERVER_URL + "/actuator/captchaToken?type=tianai&deviceIdentified=").then(r => {
 
             let query = document.querySelector("script[id='tianai']");
 
@@ -54,23 +54,23 @@ document.querySelector('#captcha').addEventListener('click', () => {
 
     } else {
         tianaiCaptcha.show();
-    }*/
+    }
 
-    axios.get(import.meta.env.VITE_APP_SERVER_URL + "/resource/captcha/generateToken?type=tianai").then(r => {
+    /*axios.get(import.meta.env.VITE_APP_SERVER_URL + "/actuator/captchaToken?type=tianai&deviceIdentified=").then(r => {
 
         tianaiCaptcha = new TianaiCaptcha({
-            appId:r.data.data.args.generate.appId,
+            baseUrl:import.meta.env.VITE_APP_SERVER_URL,
             token:r.data.data.token.name,
             success:successFunction,
             error:console.error
         });
         tianaiCaptcha.show();
 
-    });
+    });*/
 });
 
 function successFunction(data) {
-    axios.post(import.meta.env.VITE_APP_SERVER_URL + "/resource/captcha/verifyCaptcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data + "&_appId=" + tianaiCaptcha.config.appId).then(r => {
+    axios.post(import.meta.env.VITE_APP_SERVER_URL + "/actuator/captcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data + "&_appId=" + tianaiCaptcha.config.appId).then(r => {
         setTimeout(() => {
             tianaiCaptcha.hide();
             tianaiCaptcha = undefined;
