@@ -1,7 +1,7 @@
 import './style.css'
 import javascriptLogo from './javascript.svg'
 import axios from "axios";
-//import { TianaiCaptcha } from './src/lib/tianai-captcha.js'
+import { TianaiCaptcha } from './src/lib/tianai-captcha.js'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -20,8 +20,8 @@ let tianaiCaptcha;
 
 document.querySelector('#captcha').addEventListener('click', () => {
 
-    if (!tianaiCaptcha) {
-        axios.get(import.meta.env.VITE_APP_SERVER_URL + "/actuator/captchaToken?type=tianai&deviceIdentified=").then(r => {
+    /*if (!tianaiCaptcha) {
+        axios.get(import.meta.env.VITE_APP_SERVER_URL + "/captcha/generateToken?type=tianai&deviceIdentified=").then(r => {
 
             let query = document.querySelector("script[id='tianai']");
 
@@ -54,9 +54,9 @@ document.querySelector('#captcha').addEventListener('click', () => {
 
     } else {
         tianaiCaptcha.show();
-    }
+    }*/
 
-    /*axios.get(import.meta.env.VITE_APP_SERVER_URL + "/actuator/captchaToken?type=tianai&deviceIdentified=").then(r => {
+    axios.get(import.meta.env.VITE_APP_SERVER_URL + "/captcha/generateToken?type=tianai&deviceIdentified=").then(r => {
 
         tianaiCaptcha = new TianaiCaptcha({
             baseUrl:import.meta.env.VITE_APP_SERVER_URL,
@@ -66,11 +66,11 @@ document.querySelector('#captcha').addEventListener('click', () => {
         });
         tianaiCaptcha.show();
 
-    });*/
+    });
 });
 
 function successFunction(data) {
-    axios.post(import.meta.env.VITE_APP_SERVER_URL + "/actuator/captcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data + "&_appId=" + tianaiCaptcha.config.appId).then(r => {
+    axios.post(import.meta.env.VITE_APP_SERVER_URL + "/captcha/verifyCaptcha?captchaType=tianai&_tianaiCaptchaToken=" + tianaiCaptcha.config.token + "&_tianaiCaptcha=" + data.data).then(r => {
         setTimeout(() => {
             tianaiCaptcha.hide();
             tianaiCaptcha = undefined;

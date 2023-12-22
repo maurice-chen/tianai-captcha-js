@@ -7,7 +7,6 @@ class TianaiCaptcha {
 
     this.config.postConfig = this.config.postConfig || {
       captchaParamName:'_tianaiCaptcha',
-      //appIdParamName:'_appId',
       tokenParamName:'_tianaiCaptchaToken'
     }
     this.config.slider = this.config.slider || this.sliderConfig();
@@ -137,21 +136,14 @@ class TianaiCaptcha {
     }
     let param = this.config.postConfig.tokenParamName + "=" + this.config.token + "&captchaType=tianai&generateImageType=" + (this.config.generateType || 'random');
 
-    //param[this.config.postConfig.tokenParamName] = this.config.token;
-    //param[this.config.postConfig.appIdParamName] = this.config.appId;
-
-    //param["captchaType"] = "tianai";
-    //param["generateImageType"] = this.config.generateType || 'random';
-
     return this.http
-        .get("/actuator/captcha?" + param)
+        .get("/captcha/generateCaptcha?" + param)
         .then(r => this.doGenerateHtml(r.data.data))
         .catch((e) => {
           if (e.response.data) {
             const data = e.response.data;
             if (e.response.data.executeCode && e.response.data.executeCode === '10404') {
-              axios.get(this.config.baseUrl + "/actuator/captchaToken?type=tianai").then(r => {
-                this.config.appId = r.data.data.args.generate.appId;
+              axios.get(this.config.baseUrl + "/captcha/generateToken?type=tianai").then(r => {
                 this.config.token = r.data.data.token.name;
                 this.generateCaptcha(lading);
               });
@@ -471,8 +463,7 @@ class TianaiCaptcha {
     this.loading(this.config.validText);
     this
         .http
-        //.post("/resource/merchant/clientVerifyTianaiCaptcha?" + this.config.postConfig.tokenParamName + "=" + this.config.token + "&" + this.config.postConfig.appIdParamName + "=" + this.config.appId, data)
-        .post("/clientVerify?" + this.config.postConfig.tokenParamName + "=" + this.config.token, data)
+        .post("/captcha/clientVerify?" + this.config.postConfig.tokenParamName + "=" + this.config.token, data)
         .then(r=> this.showResult(r.data))
         .catch((e) => {
           if (this.config.failRefreshCaptcha) {
