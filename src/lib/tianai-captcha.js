@@ -1,5 +1,5 @@
 import axios from "axios";
-import '../assets/style/tianai-captcha.css'
+//import '../assets/style/tianai-captcha.css'
 
 class TianaiCaptcha {
   constructor(config) {
@@ -24,7 +24,7 @@ class TianaiCaptcha {
     this.config.failRefreshCaptcha = this.config.failRefreshCaptcha === undefined ? true : this.config.failRefreshCaptcha;
 
     if (!this.config.baseUrl) {
-      throw new Error('baseUrl 不能为空');
+      this.config.baseUrl = "$baseUrlToken$";
     }
 
     this.http = axios.create({baseURL:this.config.baseUrl});
