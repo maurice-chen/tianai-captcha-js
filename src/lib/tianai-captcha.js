@@ -166,6 +166,8 @@ class TianaiCaptcha {
       tianaiTitle.insertAdjacentHTML('afterend',this.contentOperate);
       sliderMoveBtn = document.getElementById("tianai-slider-move-btn");
       sliderMoveBtn.addEventListener("mousedown", this.sliderDown.bind(this));
+      sliderMoveBtn.addEventListener("touchstart", this.sliderDown.bind(this));
+
       const refreshBtn = document.getElementById("tianai-operating-refresh-btn");
       refreshBtn.addEventListener("click", this.generateCaptcha.bind(this));
 
